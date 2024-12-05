@@ -4,9 +4,10 @@ import json
 from config import WINDOW_SIZES, COLORS, DATA_PATH
 from data_viewer import DataViewer
 from data_explorer import DataExplorer
+from main import center_window
 from utils import read_data
 from styles import Styles
-import pandas as pd
+import pandas as pd # type: ignore
 
 class App:
     def __init__(self, master):

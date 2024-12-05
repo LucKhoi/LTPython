@@ -13,7 +13,7 @@ def center_window(window, width, height):
     x = (screen_width // 2) - (width // 2)
     y = (screen_height // 2) - (height // 2)
     
-    # Đặt vị trí cho cửa sổ
+    # Đặt vị trí cho cửa sổ 
     window.geometry(f"{width}x{height}+{x}+{y}")
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
+import pandas as pd # type: ignore
+import numpy as np # type: ignore
+import matplotlib.pyplot as plt # type: ignore
+import seaborn as sns # type: ignore
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
@@ -382,7 +382,7 @@ class DataExplorer:
         plt.setp(ax.get_xticklabels(), rotation=45)
         
         # Embed biểu đồ vào tkinter
-        from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+        from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg # type: ignore
         canvas = FigureCanvasTkAgg(fig, unique_frame)
         canvas.draw()
         canvas.get_tk_widget().pack(fill='both', expand=True)

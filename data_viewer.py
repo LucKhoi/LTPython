@@ -1,4 +1,4 @@
-import pandas as pd
+import pandas as pd # type: ignore
 import tkinter as tk
 from tkinter import ttk, messagebox
 from tkinter import simpledialog, messagebox
@@ -465,75 +465,83 @@ class DataViewer:
             self.panel_visible = False
 
     def search_data(self):
-    # Tạo cửa sổ nhập liệu cho điều kiện tìm kiếm
-    search_window = tk.Toplevel(self.master)
-    search_window.title("Tìm kiếm Dữ liệu")
+        # Tạo cửa sổ nhập liệu cho điều kiện tìm kiếm
+        search_window = tk.Toplevel(self.master)
+        search_window.title("Tìm kiếm Dữ liệu")
 
-    # Tạo frame cho các điều kiện tìm kiếm
-    search_frame = ttk.Frame(search_window, padding="10")
-    search_frame.pack(fill='x')
+        # Tạo frame cho các điều kiện tìm kiếm
+        search_frame = ttk.Frame(search_window, padding="10")
+        search_frame.pack(fill='x')
 
-    # Tạo dictionary để lưu các entry tìm kiếm
-    search_entries = {}
+        # Tạo dictionary để lưu các entry tìm kiếm
+        search_entries = {}
 
-    # Định nghĩa giá trị cho các trường cụ thể
-    property_types = ["Flat", "House", "Penthouse", "Upper Portion", "Lower Portion"]
-    cities = ["Islamabad", "Lahore", "Faisalabad", "Rawalpindi", "Karachi"]
-    purposes = ["For Sale", "For Rent"]
+        # Định nghĩa giá trị cho các trường cụ thể
+        property_types = ["Flat", "House", "Penthouse", "Upper Portion", "Lower Portion"]
+        cities = ["Islamabad", "Lahore", "Faisalabad", "Rawalpindi", "Karachi"]
+        purposes = ["For Sale", "For Rent"]
 
-    # Tạo label và combobox cho từng cột
-    for column in self.df.columns:
-        frame = ttk.Frame(search_frame)
-        frame.pack(fill='x', pady=5)
-        ttk.Label(frame, text=column).pack(side='left')
+        # Tạo label và combobox cho từng cột
+        for column in self.df.columns:
+            frame = ttk.Frame(search_frame)
+            frame.pack(fill='x', pady=5)
+            ttk.Label(frame, text=column).pack(side='left')
         
-        if column == 'property_type':
-            entry = ttk.Combobox(frame, values=property_types)
-        elif column == 'city':
-            entry = ttk.Combobox(frame, values=cities)
-        elif column == 'purpose':
-            entry = ttk.Combobox(frame, values=purposes)
-        else:
-            entry = ttk.Entry(frame)
+            if column == 'property_type':
+                entry = ttk.Combobox(frame, values=property_types)
+                entry.set("Chọn loại bất động sản")  # Set default text
+            elif column == 'city':
+                entry = ttk.Combobox(frame, values=cities)
+                entry.set("Chọn thành phố")  # Set default text
+            elif column == 'purpose':
+                entry = ttk.Combobox(frame, values=purposes)
+                entry.set("Chọn mục đích")  # Set default text
+            else:
+                entry = ttk.Entry(frame)
 
-        entry.pack(side='left', fill='x', expand=True, padx=5)
-        search_entries[column] = entry  # Lưu entry vào dictionary
+            entry.pack(side='left', fill='x', expand=True, padx=5)
+            search_entries[column] = entry  # Lưu entry vào dictionary
 
-    def perform_search():   
-        # Kiểm tra xem có ít nhất 1 điều kiện nào được nhập hay không
-        if not any(entry.get().strip() for entry in search_entries.values()):
-            messagebox.showwarning("Cảnh báo", "Vui lòng nhập ít nhất một điều kiện tìm kiếm!")
-            return
+        def perform_search():   
+            # Kiểm tra xem có ít nhất 1 điều kiện nào được nhập hay không
+            if not any(entry.get().strip() for entry in search_entries.values()):
+                messagebox.showwarning("Cảnh báo", "Vui lòng nhập ít nhất một điều kiện tìm kiếm!")
+                return
 
-        # Lọc DataFrame dựa trên các điều kiện đã nhập
-        filtered_df = self.original_df.copy()
-        conditions = []
+            # Lọc DataFrame dựa trên các điều kiện đã nhập
+            filtered_df = self.original_df.copy()
+            conditions = []
 
-        for column, entry in search_entries.items():
-            search_term = entry.get().strip().lower()
-            if search_term:
-                # Tạo điều kiện tìm kiếm cho cột hiện tại
-                conditions.append(filtered_df[column].astype(str).str.contains(search_term, na=False, case=False))
+            for column, entry in search_entries.items():
+                search_term = entry.get().strip().lower()
+                if search_term:
+                    # Tạo điều kiện tìm kiếm cho cột hiện tại
+                    conditions.append(filtered_df[column].astype(str).str.contains(search_term, na=False, case=False))
 
-        # Kết hợp tất cả các điều kiện bằng phép AND
-        if conditions:
-            combined_condition = conditions[0]
-            for condition in conditions[1:]:
-                combined_condition &= condition
-        
-            filtered_df = filtered_df[combined_condition]
+            # Kết hợp tất cả các điều kiện bằng phép AND
+            if conditions:
+                combined_condition = conditions[0]
+                for condition in conditions[1:]:
+                    combined_condition &= condition
+            
+                filtered_df = filtered_df[combined_condition]
 
-        self.df = filtered_df  # Cập nhật DataFrame với dữ liệu đã lọc
-        self.load_data()  # Tải dữ liệu mới
-        search_window.destroy()  # Đóng cửa sổ tìm kiếm
+                if filtered_df.empty:
+                    messagebox.showinfo("Kết quả", "Không tìm thấy kết quả nào!")
+            else:
+                messagebox.showinfo("Kết quả", "Không có điều kiện tìm kiếm hợp lệ!")
 
-    # Tạo nút tìm kiếm
-    search_button = ttk.Button(search_window, text="Tìm kiếm", command=perform_search)
-    search_button.pack(pady=10)
+            self.df = filtered_df  # Cập nhật DataFrame với dữ liệu đã lọc
+            self.load_data()  # Tải dữ liệu mới
+            search_window.destroy()  # Đóng cửa sổ tìm kiếm
 
-    # Tạo nút hủy
-    cancel_button = ttk.Button(search_window, text="Hủy", command=search_window.destroy)
-    cancel_button.pack(pady=5)
+        # Tạo nút tìm kiếm
+        search_button = ttk.Button(search_window, text="Tìm kiếm", command=perform_search)
+        search_button.pack(pady=10)
+
+        # Tạo nút hủy
+        cancel_button = ttk.Button(search_window, text="Hủy", command=search_window.destroy)
+        cancel_button.pack(pady=5)
 
     def sort_data(self):
         """Sắp xếp dữ liệu theo giá."""

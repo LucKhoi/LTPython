@@ -1,10 +1,10 @@
 import tkinter as tk
 from tkinter import ttk
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import seaborn as sns
+import pandas as pd # type: ignore
+import numpy as np # type: ignore
+import matplotlib.pyplot as plt # type: ignore
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg # type: ignore
+import seaborn as sns # type: ignore
 from config import DATA_PATH
 from utils import read_data
 
